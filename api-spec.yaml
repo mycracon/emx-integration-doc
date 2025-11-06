@@ -1,0 +1,360 @@
+openapi: 3.1.0
+info:
+  title: Orders API
+  version: 1.0.0
+  description: "This document describes how to integrate with EMX through Shipad's system.\r\n\r\n### Root URL\r\nhttps://q4985y7ky9.execute-api.us-east-1.amazonaws.com/prod\r\n"
+paths:
+  /orders:
+    post:
+      summary: Create an order
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+            examples:
+              sample:
+                value:
+                  weight:
+                    value: 270
+                    unit: Grams
+                  Consignee:
+                    contact:
+                      name: SAM TARLY
+                      mobileNumber: +1-616-443-6699
+                      phoneNumber: +1-616-443-6699
+                      emailAddress: null
+                      companyName: null
+                      altMobileNumber: ''
+                    address:
+                      line1: 271 BRADFORD CT.
+                      line2: ''
+                      city: LEBANON
+                      cityCode: null
+                      state: OH
+                      countryCode: US
+                      countryName: UNITED STATES OF AMERICA
+                      zipCode: '45036'
+                      category: Residential
+                      streetName: null
+                      landmark: null
+                      buildingName: null
+                      floorNo: null
+                      apartmentNo: null
+                    referenceNo1: null
+                    referenceNo2: null
+                  Dimensions:
+                    Unit: 1
+                    Width: 13
+                    Height: 5
+                    Length: 18
+                  numberOfPieces: 1
+                  customsDeclarations:
+                    - countryOfOrigin: IN
+                      description: "Personal Supply Medications - Not for\_Resale"
+                      dimensions: null
+                      hsCode: '3004909900'
+                      quantity: 1
+                      value: 65.99
+                      weight: 0.29
+                  declaredValue:
+                    amount: '65.99'
+                    currency: USD
+                  referenceNumber1: TestK_2025110615
+                  referenceNumber2: '2025110615'
+                  referenceNumber3: null
+                  referenceNumber4: null
+                  specialNotes: Do not deliver on weekend
+                  remarks: null
+      responses:
+        '200':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrderResponse'
+              examples:
+                sample:
+                  value:
+                    awbNumber: LX019908509AE
+                    labelUrl: null
+                    referenceNumber: LX019908509AE
+                    labelBase64: base64 string
+      security:
+        - jwt: []
+      tags:
+        - orders
+components:
+  schemas:
+    CreateOrderRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - weight
+        - Consignee
+        - Dimensions
+        - numberOfPieces
+        - customsDeclarations
+        - declaredValue
+        - referenceNumber1
+      properties:
+        weight:
+          type: object
+          additionalProperties: false
+          required:
+            - value
+            - unit
+          properties:
+            value:
+              type: number
+              format: float
+              minimum: 0
+            unit:
+              type: string
+              enum:
+                - Grams
+                - Kilograms
+                - Pounds
+                - Ounces
+              description: Put Grams
+          description: Total weight
+        Consignee:
+          type: object
+          additionalProperties: false
+          required:
+            - contact
+            - address
+          properties:
+            contact:
+              type: object
+              additionalProperties: false
+              required:
+                - name
+                - phoneNumber
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                mobileNumber:
+                  type: string
+                  minLength: 1
+                phoneNumber:
+                  type: string
+                  nullable: true
+                emailAddress:
+                  type: string
+                  format: email
+                  nullable: true
+                companyName:
+                  type: string
+                  nullable: true
+                altMobileNumber:
+                  type: string
+                  nullable: true
+            address:
+              type: object
+              additionalProperties: false
+              required:
+                - line1
+                - city
+                - state
+                - countryCode
+                - countryName
+                - zipCode
+              properties:
+                line1:
+                  type: string
+                line2:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                cityCode:
+                  type: string
+                  nullable: true
+                state:
+                  type: string
+                countryCode:
+                  type: string
+                  minLength: 2
+                  maxLength: 2
+                countryName:
+                  type: string
+                zipCode:
+                  type: string
+                category:
+                  type: string
+                  enum:
+                    - Residential
+                    - Commercial
+                streetName:
+                  type: string
+                  nullable: true
+                landmark:
+                  type: string
+                  nullable: true
+                buildingName:
+                  type: string
+                  nullable: true
+                floorNo:
+                  type: string
+                  nullable: true
+                apartmentNo:
+                  type: string
+                  nullable: true
+            referenceNo1:
+              type: string
+              nullable: true
+            referenceNo2:
+              type: string
+              nullable: true
+        Dimensions:
+          type: object
+          additionalProperties: false
+          required:
+            - Unit
+            - Width
+            - Height
+            - Length
+          properties:
+            Unit:
+              type: integer
+              minimum: 0
+              description: Put 1 for cm
+            Width:
+              type: number
+              format: float
+              minimum: 0
+            Height:
+              type: number
+              format: float
+              minimum: 0
+            Length:
+              type: number
+              format: float
+              minimum: 0
+        numberOfPieces:
+          type: integer
+          minimum: 1
+        customsDeclarations:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CustomsDeclarationItem'
+        declaredValue:
+          type: object
+          additionalProperties: false
+          required:
+            - amount
+            - currency
+          properties:
+            amount:
+              type: number
+            currency:
+              type: string
+              minLength: 3
+              maxLength: 3
+        referenceNumber1:
+          type: string
+          description: Order number
+        referenceNumber2:
+          type: string
+          description: Another order reference
+        referenceNumber3:
+          type: string
+          nullable: true
+        referenceNumber4:
+          type: string
+          nullable: true
+        specialNotes:
+          type: string
+          nullable: true
+        remarks:
+          type: string
+          nullable: true
+    CustomsDeclarationItem:
+      type: object
+      additionalProperties: false
+      required:
+        - countryOfOrigin
+        - description
+        - hsCode
+        - quantity
+        - value
+        - weight
+      properties:
+        countryOfOrigin:
+          type: string
+          minLength: 2
+          maxLength: 2
+        description:
+          type: string
+        dimensions:
+          nullable: true
+          oneOf:
+            - type: object
+              additionalProperties: false
+              properties:
+                Unit:
+                  type: integer
+                  minimum: 0
+                Width:
+                  type: number
+                  format: float
+                  minimum: 0
+                Height:
+                  type: number
+                  format: float
+                  minimum: 0
+                Length:
+                  type: number
+                  format: float
+                  minimum: 0
+            - type: 'null'
+        hsCode:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        value:
+          type: number
+          format: float
+          minimum: 0
+        weight:
+          type: number
+          format: float
+          minimum: 0
+    CreateOrderResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - awbNumber
+        - referenceNumber
+        - labelBase64
+      properties:
+        awbNumber:
+          type: string
+        labelUrl:
+          type: string
+          format: uri
+          nullable: true
+        referenceNumber:
+          type: string
+        labelBase64:
+          type: string
+  securitySchemes:
+    jwt:
+      type: http
+      scheme: bearer
+tags:
+  - name: orders
+    description: ''
+    externalDocs:
+      description: ''
+      url: ''
+servers:
+  - url: https://q4985y7ky9.execute-api.us-east-1.amazonaws.com/prod
+    description: Production server
+    variables: {}
