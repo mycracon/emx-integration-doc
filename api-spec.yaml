@@ -46,14 +46,14 @@ paths:
                     referenceNo1: null
                     referenceNo2: null
                   Dimensions:
-                    Unit: 1
+                    Unit: Centimetre
                     Width: 13
                     Height: 5
                     Length: 18
                   numberOfPieces: 1
                   customsDeclarations:
                     - countryOfOrigin: IN
-                      description: "Personal Supply Medications - Not for\_Resale"
+                      description: Personal Supply Medications - Not for Resale
                       dimensions: null
                       hsCode: '3004909900'
                       quantity: 1
