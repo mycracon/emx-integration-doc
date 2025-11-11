@@ -220,9 +220,8 @@ components:
             - Length
           properties:
             Unit:
-              type: integer
-              minimum: 0
-              description: Put 1 for cm
+              type: string
+              description: 'Available values: Meter, Centimetre'
             Width:
               type: number
               format: float
